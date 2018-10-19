@@ -18,6 +18,7 @@ class ListFragment : androidx.fragment.app.Fragment() {
     }
 
     private lateinit var viewModel: ListViewModel
+    private lateinit var adapter: BooksAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,12 +35,17 @@ class ListFragment : androidx.fragment.app.Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter = BooksAdapter(emptyList())
-        booksRecyclerView.adapter = adapter
         viewModel.booksLiveData.observe(this, Observer {
             adapter.replaceBooks(it)
         })
-        booksRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        if (viewModel.showAsGrid){
+            booksRecyclerView.layoutManager = GridLayoutManager(context, 2)
+            adapter = GridBooksAdapter(emptyList())
+        } else {
+            booksRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            adapter = LinearBooksAdapter(emptyList())
+        }
+        booksRecyclerView.adapter = adapter
 
         title.setText(R.string.list_title)
 
@@ -64,14 +70,18 @@ class ListFragment : androidx.fragment.app.Fragment() {
                 true
             }
             R.id.action_grid -> {
+                item.isChecked = !item.isChecked
+                viewModel.showAsGrid = item.isChecked
                 if (item.isChecked) {
-                    booksRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+                    booksRecyclerView.layoutManager = GridLayoutManager(context, 2)
+                    adapter = GridBooksAdapter(adapter.books)
                     item.setIcon(R.drawable.ic_grid_on)
                 } else {
-                    booksRecyclerView.layoutManager = GridLayoutManager(context, 2)
+                    booksRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+                    adapter = LinearBooksAdapter(adapter.books)
                     item.setIcon(R.drawable.ic_grid_off)
                 }
-                item.isChecked = !item.isChecked
+                booksRecyclerView.adapter = adapter
                 true
             }
             else -> super.onOptionsItemSelected(item)

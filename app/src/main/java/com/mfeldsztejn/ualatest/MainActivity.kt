@@ -44,4 +44,9 @@ class MainActivity : AppCompatActivity() {
 
         transaction.commit()
     }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return super.onSupportNavigateUp()
+    }
 }

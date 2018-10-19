@@ -28,6 +28,7 @@ class ListViewModel : ViewModel() {
 
     val booksLiveData: LiveData<List<Book>>
         get() = _booksLiveData
+    var showAsGrid: Boolean = false
 
     init {
         NetworkingBus.register(this)

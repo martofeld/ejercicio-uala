@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -16,11 +17,11 @@ import com.mfeldsztejn.ualatest.ui.detail.DetailFragment
 import kotlinx.android.synthetic.main.book_view_holder.view.*
 import org.greenrobot.eventbus.EventBus
 
-class BooksAdapter(private var books: List<Book>) : RecyclerView.Adapter<BookViewHolder>() {
+abstract class BooksAdapter(var books: List<Book>) : RecyclerView.Adapter<BookViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return BookViewHolder(inflater.inflate(R.layout.book_view_holder, parent, false))
+        return BookViewHolder(inflater.inflate(getLayout(), parent, false))
     }
 
     override fun getItemCount() = books.size
@@ -33,6 +34,17 @@ class BooksAdapter(private var books: List<Book>) : RecyclerView.Adapter<BookVie
         this.books = books
         notifyDataSetChanged()
     }
+
+    @LayoutRes
+    abstract fun getLayout(): Int
+}
+
+class LinearBooksAdapter(books: List<Book>): BooksAdapter(books){
+    override fun getLayout() = R.layout.book_view_holder
+}
+
+class GridBooksAdapter(books: List<Book>): BooksAdapter(books){
+    override fun getLayout() = R.layout.book_view_holder_grid
 }
 
 class BookViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
