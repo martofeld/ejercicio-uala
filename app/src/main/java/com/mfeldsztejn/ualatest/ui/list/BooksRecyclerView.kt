@@ -16,35 +16,17 @@ import com.mfeldsztejn.ualatest.ui.detail.DetailFragment
 import kotlinx.android.synthetic.main.book_view_holder.view.*
 import org.greenrobot.eventbus.EventBus
 
-class BooksAdapter(private var books: List<Book>) : RecyclerView.Adapter<ViewHolder>() {
-    companion object {
-        const val VIEW_TYPE_TITLE = 0
-        const val VIEW_TYPE_BOOK = 1
-    }
+class BooksAdapter(private var books: List<Book>) : RecyclerView.Adapter<BookViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return when (viewType) {
-            VIEW_TYPE_TITLE -> TitleViewHolder(inflater.inflate(R.layout.list_title, parent, false))
-            else -> BookViewHolder(inflater.inflate(R.layout.book_view_holder, parent, false))
-        }
+        return BookViewHolder(inflater.inflate(R.layout.book_view_holder, parent, false))
     }
 
-    override fun getItemCount() = books.size + 1
+    override fun getItemCount() = books.size
 
-    override fun getItemViewType(position: Int): Int {
-        return when (position) {
-            0 -> VIEW_TYPE_TITLE
-            else -> VIEW_TYPE_BOOK
-        }
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        if (position == 0) {
-            (holder as TitleViewHolder).bind(R.string.list_title)
-        } else {
-            (holder as BookViewHolder).bind(books[position - 1])
-        }
+    override fun onBindViewHolder(holder: BookViewHolder, position: Int) {
+        holder.bind(books[position])
     }
 
     fun replaceBooks(books: List<Book>) {
@@ -53,15 +35,7 @@ class BooksAdapter(private var books: List<Book>) : RecyclerView.Adapter<ViewHol
     }
 }
 
-abstract class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
-
-class TitleViewHolder(itemView: View) : ViewHolder(itemView) {
-    fun bind(@StringRes text: Int) {
-        (itemView as TextView).setText(text)
-    }
-}
-
-class BookViewHolder(itemView: View) : ViewHolder(itemView) {
+class BookViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     fun bind(value: Book) {
         itemView.bookAuthor.text = value.author

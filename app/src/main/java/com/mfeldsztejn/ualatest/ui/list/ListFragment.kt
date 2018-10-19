@@ -41,6 +41,8 @@ class ListFragment : androidx.fragment.app.Fragment() {
         })
         booksRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
 
+        title.setText(R.string.list_title)
+
         (activity as MainActivity).setSupportActionBar(toolbar)
     }
 
@@ -63,10 +65,10 @@ class ListFragment : androidx.fragment.app.Fragment() {
             }
             R.id.action_grid -> {
                 if (item.isChecked) {
-                    booksRecyclerView.layoutManager = GridLayoutManager(context, 2)
+                    booksRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
                     item.setIcon(R.drawable.ic_grid_on)
                 } else {
-                    booksRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+                    booksRecyclerView.layoutManager = GridLayoutManager(context, 2)
                     item.setIcon(R.drawable.ic_grid_off)
                 }
                 item.isChecked = !item.isChecked
