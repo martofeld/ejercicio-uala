@@ -25,9 +25,12 @@ class ListViewModel : ViewModel() {
     private var filterStatus = ALL
     private lateinit var books: List<Book>
     private val _booksLiveData = MutableLiveData<List<Book>>()
+    private val _errorMessageLiveData = MutableLiveData<String>()
 
     val booksLiveData: LiveData<List<Book>>
         get() = _booksLiveData
+    val errorMessageLiveData: LiveData<String>
+        get() = _errorMessageLiveData
     var showAsGrid: Boolean = false
 
     init {
@@ -61,7 +64,7 @@ class ListViewModel : ViewModel() {
 
     @Subscribe
     fun onBooksFailed(apiError: ApiError) {
-        Log.e("REQUEST_FAIL", "Request failed with ${apiError.statusCode} - ${apiError.message}")
+        _errorMessageLiveData.value = apiError.message
     }
 
     fun filter() {

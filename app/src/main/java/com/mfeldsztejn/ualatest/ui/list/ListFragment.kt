@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.mfeldsztejn.ualatest.MainActivity
 import com.mfeldsztejn.ualatest.R
 import kotlinx.android.synthetic.main.list_fragment.*
@@ -35,7 +36,10 @@ class ListFragment : androidx.fragment.app.Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        progressBar.visibility = View.VISIBLE
+
         viewModel.booksLiveData.observe(this, Observer {
+            progressBar.visibility = View.GONE
             adapter.replaceBooks(it)
         })
         if (viewModel.showAsGrid){
@@ -50,6 +54,11 @@ class ListFragment : androidx.fragment.app.Fragment() {
         title.setText(R.string.list_title)
 
         (activity as MainActivity).setSupportActionBar(toolbar)
+
+        viewModel.errorMessageLiveData.observe(this, Observer {
+            progressBar.visibility = View.GONE
+            Snackbar.make(view, it, Snackbar.LENGTH_SHORT).show()
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -62,10 +71,12 @@ class ListFragment : androidx.fragment.app.Fragment() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when (item?.itemId) {
             R.id.action_sort -> {
+                progressBar.visibility = View.VISIBLE
                 viewModel.reverseSort()
                 true
             }
             R.id.action_filter -> {
+                progressBar.visibility = View.VISIBLE
                 viewModel.filter()
                 true
             }
