@@ -5,12 +5,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.StringRes
+import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.mfeldsztejn.ualatest.R
+import com.mfeldsztejn.ualatest.events.ShowFragmentEvent
 import com.mfeldsztejn.ualatest.model.Book
+import com.mfeldsztejn.ualatest.ui.detail.DetailFragment
 import kotlinx.android.synthetic.main.book_view_holder.view.*
+import org.greenrobot.eventbus.EventBus
 
 class BooksAdapter(val books: List<Book>) : RecyclerView.Adapter<ViewHolder>() {
     companion object {
@@ -20,7 +24,7 @@ class BooksAdapter(val books: List<Book>) : RecyclerView.Adapter<ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return when(viewType){
+        return when (viewType) {
             VIEW_TYPE_TITLE -> TitleViewHolder(inflater.inflate(R.layout.list_title, parent, false))
             else -> BookViewHolder(inflater.inflate(R.layout.book_view_holder, parent, false))
         }
@@ -29,7 +33,7 @@ class BooksAdapter(val books: List<Book>) : RecyclerView.Adapter<ViewHolder>() {
     override fun getItemCount() = books.size + 1
 
     override fun getItemViewType(position: Int): Int {
-        return when(position){
+        return when (position) {
             0 -> VIEW_TYPE_TITLE
             else -> VIEW_TYPE_BOOK
         }
@@ -44,15 +48,15 @@ class BooksAdapter(val books: List<Book>) : RecyclerView.Adapter<ViewHolder>() {
     }
 }
 
-abstract class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
+abstract class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
-class TitleViewHolder(itemView: View) : ViewHolder(itemView){
+class TitleViewHolder(itemView: View) : ViewHolder(itemView) {
     fun bind(@StringRes text: Int) {
         (itemView as TextView).setText(text)
     }
 }
 
-class BookViewHolder(itemView: View) : ViewHolder(itemView){
+class BookViewHolder(itemView: View) : ViewHolder(itemView) {
 
     fun bind(value: Book) {
         itemView.bookAuthor.text = value.author
@@ -69,6 +73,16 @@ class BookViewHolder(itemView: View) : ViewHolder(itemView){
                                 .error(R.drawable.ic_image_error)
                 )
                 .into(itemView.bookImage)
+
+        ViewCompat.setTransitionName(itemView.bookAuthor, "${value.id}_author")
+        ViewCompat.setTransitionName(itemView.bookTitle, "${value.id}_title")
+        ViewCompat.setTransitionName(itemView.bookImage, "${value.id}_image")
+
+        itemView.setOnClickListener {
+            EventBus.getDefault().post(ShowFragmentEvent(
+                    DetailFragment.newInstance(value), listOf(itemView.bookAuthor, itemView.bookTitle, itemView.bookImage)
+            ))
+        }
     }
 
 }

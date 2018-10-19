@@ -1,8 +1,9 @@
 package com.mfeldsztejn.ualatest.model
 
 import com.mfeldsztejn.ualatest.dto.BookDTO
+import java.io.Serializable
 
-class Book(bookDTO: BookDTO) {
+class Book(bookDTO: BookDTO): Serializable {
     val id = bookDTO.id
     val author = bookDTO.autor
     val name = bookDTO.nombre
