@@ -5,4 +5,5 @@
     <string name="unavailable">No disponible</string>
     <string name="popularity">Popularidad %1$d / 100</string>
     <string name="sort">Ordenar</string>
+    <string name="filter">Filtrar disponibles</string>
 </resources>

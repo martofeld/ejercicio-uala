@@ -54,6 +54,10 @@ class ListFragment : androidx.fragment.app.Fragment() {
                 viewModel.reverseSort()
                 true
             }
+            R.id.action_filter -> {
+                viewModel.filter()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }

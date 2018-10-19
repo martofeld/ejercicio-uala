@@ -16,8 +16,16 @@ import org.greenrobot.eventbus.ThreadMode
 
 class ListViewModel : ViewModel() {
 
+    companion object {
+        const val ALL = 0
+        const val AVAILABLE = 1
+        const val UNAVAILABLE = 2
+    }
+
+    private var filterStatus = ALL
     private lateinit var books: List<Book>
     private val _booksLiveData = MutableLiveData<List<Book>>()
+
     val booksLiveData: LiveData<List<Book>>
         get() = _booksLiveData
 
@@ -30,7 +38,7 @@ class ListViewModel : ViewModel() {
                 .enqueue(DefaultCallback<List<BookDTO>>())
     }
 
-    fun reverseSort(){
+    fun reverseSort() {
         AsyncTask.execute {
             books = books.reversed()
             _booksLiveData.postValue(books)
@@ -38,7 +46,7 @@ class ListViewModel : ViewModel() {
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    fun onBooksObtained(booksDTOs: List<BookDTO>){
+    fun onBooksObtained(booksDTOs: List<BookDTO>) {
         books = booksDTOs
                 .map { Book(it) }
                 .sortedBy { -it.popularity }
@@ -48,7 +56,27 @@ class ListViewModel : ViewModel() {
     }
 
     @Subscribe
-    fun onBooksFailed(apiError: ApiError){
+    fun onBooksFailed(apiError: ApiError) {
         Log.e("REQUEST_FAIL", "Request failed with ${apiError.statusCode} - ${apiError.message}")
+    }
+
+    fun filter() {
+        filterStatus++
+        if (filterStatus == 3) {
+            filterStatus = 0
+        }
+        AsyncTask.execute {
+            var auxBooks: List<Book> = ArrayList(books)
+
+            auxBooks = auxBooks.filter {
+                when (filterStatus) {
+                    AVAILABLE -> it.available
+                    UNAVAILABLE -> !it.available
+                    else -> true
+                }
+            }
+
+            _booksLiveData.postValue(auxBooks)
+        }
     }
 }
