@@ -40,7 +40,10 @@ class ListViewModel : ViewModel() {
 
     fun reverseSort() {
         AsyncTask.execute {
+            // Reverse this as well
             books = books.reversed()
+
+            val books = _booksLiveData.value!!.reversed()
             _booksLiveData.postValue(books)
         }
     }
