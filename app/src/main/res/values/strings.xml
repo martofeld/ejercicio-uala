@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">UalaTest</string>
+    <string name="list_title">Bienvenido a la biblioteca Ualá</string>
+    <string name="available">Disponible</string>
+    <string name="unavailable">No disponible</string>
+    <string name="popularity">Popularidad %1$d / 100</string>
 </resources>
