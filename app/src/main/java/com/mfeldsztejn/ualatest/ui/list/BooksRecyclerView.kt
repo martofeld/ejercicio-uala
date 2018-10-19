@@ -16,7 +16,7 @@ import com.mfeldsztejn.ualatest.ui.detail.DetailFragment
 import kotlinx.android.synthetic.main.book_view_holder.view.*
 import org.greenrobot.eventbus.EventBus
 
-class BooksAdapter(val books: List<Book>) : RecyclerView.Adapter<ViewHolder>() {
+class BooksAdapter(private var books: List<Book>) : RecyclerView.Adapter<ViewHolder>() {
     companion object {
         const val VIEW_TYPE_TITLE = 0
         const val VIEW_TYPE_BOOK = 1
@@ -45,6 +45,11 @@ class BooksAdapter(val books: List<Book>) : RecyclerView.Adapter<ViewHolder>() {
         } else {
             (holder as BookViewHolder).bind(books[position - 1])
         }
+    }
+
+    fun replaceBooks(books: List<Book>) {
+        this.books = books
+        notifyDataSetChanged()
     }
 }
 

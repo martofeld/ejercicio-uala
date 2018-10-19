@@ -1,5 +1,6 @@
 package com.mfeldsztejn.ualatest.ui.list
 
+import android.os.AsyncTask
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -15,6 +16,7 @@ import org.greenrobot.eventbus.ThreadMode
 
 class ListViewModel : ViewModel() {
 
+    private lateinit var books: List<Book>
     private val _booksLiveData = MutableLiveData<List<Book>>()
     val booksLiveData: LiveData<List<Book>>
         get() = _booksLiveData
@@ -28,9 +30,16 @@ class ListViewModel : ViewModel() {
                 .enqueue(DefaultCallback<List<BookDTO>>())
     }
 
+    fun reverseSort(){
+        AsyncTask.execute {
+            books = books.reversed()
+            _booksLiveData.postValue(books)
+        }
+    }
+
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     fun onBooksObtained(booksDTOs: List<BookDTO>){
-        val books = booksDTOs
+        books = booksDTOs
                 .map { Book(it) }
                 .sortedBy { -it.popularity }
 

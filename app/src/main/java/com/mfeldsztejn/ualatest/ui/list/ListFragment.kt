@@ -1,9 +1,7 @@
 package com.mfeldsztejn.ualatest.ui.list
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,6 +18,12 @@ class ListFragment : androidx.fragment.app.Fragment() {
 
     private lateinit var viewModel: ListViewModel
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        setHasOptionsMenu(true)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         viewModel = ViewModelProviders.of(this).get(ListViewModel::class.java)
@@ -29,11 +33,28 @@ class ListFragment : androidx.fragment.app.Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val adapter = BooksAdapter(emptyList())
+        booksRecyclerView.adapter = adapter
         viewModel.booksLiveData.observe(this, Observer {
-            booksRecyclerView.adapter = BooksAdapter(it)
+            adapter.replaceBooks(it)
         })
         booksRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
 
         (activity as MainActivity).setSupportActionBar(toolbar)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater!!.inflate(R.menu.list_fragment_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return when (item?.itemId) {
+            R.id.action_sort -> {
+                viewModel.reverseSort()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 }
