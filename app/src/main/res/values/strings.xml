@@ -6,4 +6,5 @@
     <string name="popularity">Popularidad %1$d / 100</string>
     <string name="sort">Ordenar</string>
     <string name="filter">Filtrar disponibles</string>
+    <string name="show_as_grid">Mostrar como grilla</string>
 </resources>

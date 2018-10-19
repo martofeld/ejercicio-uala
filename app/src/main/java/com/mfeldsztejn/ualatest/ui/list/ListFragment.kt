@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mfeldsztejn.ualatest.MainActivity
@@ -46,6 +47,8 @@ class ListFragment : androidx.fragment.app.Fragment() {
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater!!.inflate(R.menu.list_fragment_menu, menu)
+
+        menu!!.findItem(R.id.action_grid).isChecked = false
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -56,6 +59,17 @@ class ListFragment : androidx.fragment.app.Fragment() {
             }
             R.id.action_filter -> {
                 viewModel.filter()
+                true
+            }
+            R.id.action_grid -> {
+                if (item.isChecked) {
+                    booksRecyclerView.layoutManager = GridLayoutManager(context, 2)
+                    item.setIcon(R.drawable.ic_grid_on)
+                } else {
+                    booksRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+                    item.setIcon(R.drawable.ic_grid_off)
+                }
+                item.isChecked = !item.isChecked
                 true
             }
             else -> super.onOptionsItemSelected(item)
